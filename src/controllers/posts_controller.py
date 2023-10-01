@@ -1,11 +1,16 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, abort
 from main import db
 from models.posts import Post
+from models.users import User
+from schemas.post_schema import post_schema, posts_schema
+from datetime import datetime
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 posts = Blueprint('posts', __name__, url_prefix="/posts")
 
 # POST route endpoint
 @posts.route("/", methods=["POST"])
+@jwt_required()
 def create_post():
     post_fields = post_schema.load(request.json)
 
@@ -20,6 +25,7 @@ def create_post():
 
 # GET route endpoint
 @posts.route("/", methods=["GET"])
+@jwt_required()
 def get_posts():
     stmt = db.select(Post)
     posts_list = db.session.scalars(stmt)
@@ -28,12 +34,13 @@ def get_posts():
 
 # DELETE route endpoint
 @posts.route("/<int:id>/", methods=["DELETE"])
+@jwt_required()
 def delete_post(id):
-    # user_id = get_jwt_identity()
-    # stmt = db.select(User).filter_by(id=user_id)
-    # user = db.session.scalar(stmt)
-    # if not user:
-    #     return abort(401, description="Invalid user")
+    user_id = get_jwt_identity()
+    stmt = db.select(User).filter_by(id=user_id)
+    user = db.session.scalar(stmt)
+    if not user:
+        return abort(401, description="Invalid user")
     
     stmt = db.select(Post).filter_by(id=id)
     post = db.session.scalar(stmt)
