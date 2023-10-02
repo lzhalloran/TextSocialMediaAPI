@@ -10,7 +10,7 @@ users = Blueprint('users', __name__, url_prefix="/users")
 
 # POST route endpoint - Register new user
 @users.route("/register", methods=["POST"])
-def users_register():
+def user_register():
     user_fields = user_schema.load(request.json)
     stmt = db.select(User).filter_by(username=user_fields["username"])
     user = db.session.scalar(stmt)
@@ -34,7 +34,7 @@ def users_register():
 
 # POST route endpoint - Login existing user
 @users.route("/login", methods=["POST"])
-def users_login():
+def user_login():
     user_fields = user_schema.load(request.json)
     stmt = db.select(User).filter_by(username=user_fields["username"])
     user = db.session.scalar(stmt)
