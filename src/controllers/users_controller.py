@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, abort
 from main import db
 from models.users import User
-from schemas.user_schema import user_schema, users_schema
+from schemas.user_schema import user_schema, users_schema, user_login_schema
 from datetime import timedelta
 from main import bcrypt
 from flask_jwt_extended import create_access_token
@@ -35,7 +35,7 @@ def user_register():
 # POST route endpoint - Login existing user
 @users.route("/login", methods=["POST"])
 def user_login():
-    user_fields = user_schema.load(request.json)
+    user_fields = user_login_schema.load(request.json)
     stmt = db.select(User).filter_by(username=user_fields["username"])
     user = db.session.scalar(stmt)
     
