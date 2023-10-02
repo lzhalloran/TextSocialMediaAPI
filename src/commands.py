@@ -17,16 +17,6 @@ def create_db():
 @db_commands .cli.command("seed")
 def seed_db():
     print("Seeding Tables...")
-    post1 = Post(
-        text = "Hi, this is the first post!"
-    )
-    db.session.add(post1)
-
-    post2 = Post(
-        text = "Second post here"
-    )
-    db.session.add(post2)
-
     
     user1 = User(
         username = "user1",
@@ -43,6 +33,21 @@ def seed_db():
         bio = "Second user here, feel free to connect!"
     )
     db.session.add(user2)
+
+    db.session.commit()
+
+
+    post1 = Post(
+        text = "Hi, this is the first post!",
+        user_id = user1.id
+    )
+    db.session.add(post1)
+
+    post2 = Post(
+        text = "Second post here", 
+        user = user2
+    )
+    db.session.add(post2)
 
     db.session.commit()
     print("Seeded Tables.")

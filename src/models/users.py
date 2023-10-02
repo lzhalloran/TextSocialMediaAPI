@@ -7,3 +7,8 @@ class User(db.Model):
     email = db.Column(db.String(254), nullable=False)
     password = db.Column(db.String(), nullable=False)
     bio = db.Column(db.String(200))
+    posts = db.relationship(
+        "Post",
+        back_populates="user",
+        cascade="all, delete"
+    )

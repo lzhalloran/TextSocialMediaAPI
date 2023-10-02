@@ -12,11 +12,18 @@ posts = Blueprint('posts', __name__, url_prefix="/posts")
 @posts.route("/", methods=["POST"])
 @jwt_required()
 def create_post():
+    user_id = get_jwt_identity()
+    stmt = db.select(User).filter_by(id=user_id)
+    user = db.session.scalar(stmt)
+    if not user:
+        return abort(401, description="Invalid user")
+
     post_fields = post_schema.load(request.json)
 
     new_post = Post()
     new_post.text = post_fields["text"]
     new_post.created_time = datetime.now()
+    new_post.user_id = user_id
 
     db.session.add(new_post)
     db.session.commit()
@@ -48,6 +55,9 @@ def delete_post(id):
     if not post:
         return abort(400, description="Post does not exist")
     
+    if post.user.id != int(user_id):
+        return abort(401, description=f"User ({user_id}) cannot delete other user ({post.user.id}) posts")
+
     db.session.delete(post)
     db.session.commit()
 

@@ -46,3 +46,15 @@ def user_login():
     access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
     
     return jsonify({"user":user.username, "token": access_token })
+
+# GET route endpoint - Get user info and posts
+@users.route("", methods=["GET"])
+def user_page():
+    stmt = db.select(User).filter_by(username=request.args.get('username'))
+    user = db.session.scalar(stmt)
+
+    if not user:
+        return abort(400, description="Username does not exist")
+
+    result = user_schema.dump(user)
+    return jsonify(result)
