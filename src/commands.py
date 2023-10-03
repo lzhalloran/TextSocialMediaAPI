@@ -3,6 +3,7 @@ from flask import Blueprint
 from main import bcrypt
 from models.users import User
 from models.posts import Post
+from models.comments import Comment
 
 db_commands = Blueprint("db", __name__)
 
@@ -18,6 +19,7 @@ def create_db():
 def seed_db():
     print("Seeding Tables...")
     
+    # Seed some Users in the database
     user1 = User(
         username = "user1",
         email = "user1@email.com",
@@ -36,7 +38,7 @@ def seed_db():
 
     db.session.commit()
 
-
+    # Seed some Posts in the database
     post1 = Post(
         text = "Hi, this is the first post!",
         user_id = user1.id
@@ -50,6 +52,24 @@ def seed_db():
     db.session.add(post2)
 
     db.session.commit()
+
+    # Seed some Comments in the database
+    comment1 = Comment(
+        text = "Congratulations on your first post, user 1!",
+        user = user2,
+        post = post1
+    )
+    db.session.add(comment1)
+
+    comment2 = Comment(
+        text = "Nice post user 2!",
+        user = user1,
+        post = post2
+    )
+    db.session.add(comment2)
+
+    db.session.commit()
+
     print("Seeded Tables.")
 
 
