@@ -41,6 +41,32 @@ def get_posts():
     result = posts_schema.dump(posts_list)
     return jsonify(result)
 
+# PUT route endpoint
+@posts.route("/<int:id>/", methods=["PUT"])
+@jwt_required()
+def update_post(id):
+    user_id = get_jwt_identity()
+    stmt = db.select(User).filter_by(id=user_id)
+    user = db.session.scalar(stmt)
+    if not user:
+        return abort(401, description="Invalid user")
+    
+    stmt = db.select(Post).filter_by(id=id)
+    post = db.session.scalar(stmt)
+    if not post:
+        return abort(400, description="Post does not exist")
+    
+    if post.user.id != int(user_id):
+        return abort(401, description=f"User ({user_id}) cannot update other user ({post.user.id}) posts")
+    
+    post_fields = post_schema.load(request.json)
+
+    post.text = post_fields["text"]
+
+    db.session.commit()
+
+    return jsonify(post_schema.dump(post))
+
 # DELETE route endpoint
 @posts.route("/<int:id>/", methods=["DELETE"])
 @jwt_required()
@@ -117,7 +143,7 @@ def delete_comment(post_id, comment_id):
     return jsonify(comment_schema.dump(comment))
 
 ## Exception Handling
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, Unauthorized
 from marshmallow.exceptions import ValidationError
 
 @posts.errorhandler(KeyError)
@@ -131,3 +157,7 @@ def default_error(e):
 @posts.errorhandler(ValidationError)
 def validation_error(e):
     return jsonify(e.messages), 400
+
+@posts.errorhandler(Unauthorized)
+def unauthorized_error(e):
+    return jsonify({'error': e.description}), 401
