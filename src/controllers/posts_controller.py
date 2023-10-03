@@ -87,8 +87,7 @@ def delete_post(id):
 
     db.session.delete(post)
     db.session.commit()
-
-    return jsonify(post_schema.dump(post))
+    return jsonify({'confirmation': f'The post {id} is deleted'})
 
 ## Comment route endpoints
 # POST route endpoint - new comment
