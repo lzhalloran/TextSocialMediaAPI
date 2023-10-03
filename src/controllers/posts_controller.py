@@ -115,3 +115,19 @@ def delete_comment(post_id, comment_id):
     db.session.commit()
 
     return jsonify(comment_schema.dump(comment))
+
+## Exception Handling
+from werkzeug.exceptions import BadRequest
+from marshmallow.exceptions import ValidationError
+
+@posts.errorhandler(KeyError)
+def key_error(e):
+    return jsonify({'error': f'The field {e} is required'}), 400
+
+@posts.errorhandler(BadRequest)
+def default_error(e):
+    return jsonify({'error': e.description}), 400
+
+@posts.errorhandler(ValidationError)
+def validation_error(e):
+    return jsonify(e.messages), 400
