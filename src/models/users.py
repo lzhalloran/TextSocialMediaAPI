@@ -17,3 +17,15 @@ class User(db.Model):
         back_populates="user",
         cascade="all, delete"
     )
+    connections_requestor = db.relationship(
+        "Connection",
+        back_populates="requestor",
+        foreign_keys='Connection.requestor_id',
+        cascade="all, delete"
+    )
+    connections_acceptor = db.relationship(
+        "Connection",
+        back_populates="acceptor",
+        foreign_keys='Connection.acceptor_id',
+        cascade="all, delete"
+    )

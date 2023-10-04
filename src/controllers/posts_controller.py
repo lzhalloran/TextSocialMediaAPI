@@ -54,7 +54,7 @@ def update_post(id):
     stmt = db.select(Post).filter_by(id=id)
     post = db.session.scalar(stmt)
     if not post:
-        return abort(400, description="Post does not exist")
+        return abort(404, description="Post does not exist")
     
     if post.user.id != int(user_id):
         return abort(401, description=f"User ({user_id}) cannot update other user ({post.user.id}) posts")
@@ -80,7 +80,7 @@ def delete_post(id):
     stmt = db.select(Post).filter_by(id=id)
     post = db.session.scalar(stmt)
     if not post:
-        return abort(400, description="Post does not exist")
+        return abort(404, description="Post does not exist")
     
     if post.user.id != int(user_id):
         return abort(401, description=f"User ({user_id}) cannot delete other user ({post.user.id}) posts")

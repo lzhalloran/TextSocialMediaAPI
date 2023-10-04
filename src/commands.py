@@ -4,6 +4,7 @@ from main import bcrypt
 from models.users import User
 from models.posts import Post
 from models.comments import Comment
+from models.connections import Connection
 
 db_commands = Blueprint("db", __name__)
 
@@ -67,6 +68,15 @@ def seed_db():
         post = post2
     )
     db.session.add(comment2)
+
+    db.session.commit()
+
+    # Seed some Connections in the database
+    connection1 = Connection(
+        requestor = user1,
+        acceptor = user2
+    )
+    db.session.add(connection1)
 
     db.session.commit()
 
