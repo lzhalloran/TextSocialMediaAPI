@@ -29,3 +29,8 @@ class User(db.Model):
         foreign_keys='Connection.acceptor_id',
         cascade="all, delete"
     )
+    memberships = db.relationship(
+        "Membership",
+        back_populates="user",
+        cascade="all, delete"
+    )

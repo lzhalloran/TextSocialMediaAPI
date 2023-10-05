@@ -6,6 +6,7 @@ from models.posts import Post
 from models.comments import Comment
 from models.connections import Connection
 from models.groups import Group
+from models.memberships import Membership
 
 db_commands = Blueprint("db", __name__)
 
@@ -40,8 +41,6 @@ def seed_db():
 
     db.session.commit()
 
-    
-
     # Seed some Groups in the database
     group1 = Group(
         name = "Group 1",
@@ -53,6 +52,28 @@ def seed_db():
         name = "Group 2"
     )
     db.session.add(group2)
+
+    db.session.commit()
+
+    # Seed some Memberships in the database
+    membership1 = Membership(
+        user = user1,
+        group = group1,
+        admin = True
+    )
+    db.session.add(membership1)
+
+    membership2 = Membership(
+        user = user2,
+        group = group1
+    )
+    db.session.add(membership2)
+
+    membership3 = Membership(
+        user = user2,
+        group = group2
+    )
+    db.session.add(membership3)
 
     db.session.commit()
 

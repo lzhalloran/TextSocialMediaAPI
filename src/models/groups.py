@@ -10,3 +10,8 @@ class Group(db.Model):
         back_populates="group",
         cascade="all, delete"
     )
+    memberships = db.relationship(
+        "Membership",
+        back_populates="group",
+        cascade="all, delete"
+    )

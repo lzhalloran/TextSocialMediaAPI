@@ -36,6 +36,15 @@ def create_post():
         group = db.session.scalar(stmt)
         if(not group):
             return abort(404, description="Group does not exist")
+        
+        stmt = db.select(Membership).filter(
+            (Membership.group_id == group.id) &
+            (Membership.user_id == int(user_id))
+        )
+        membership = db.session.scalar(stmt)
+        if not membership:
+            return abort(401, description="Current user is not member of this group")
+
         new_post.group_id = group.id
 
     db.session.add(new_post)
