@@ -236,7 +236,7 @@ def reject_connection(other_user_id):
 
 
 ## Exception Handling
-from werkzeug.exceptions import BadRequest, Unauthorized, NotFound
+from werkzeug.exceptions import BadRequest, Unauthorized, NotFound, MethodNotAllowed
 from marshmallow.exceptions import ValidationError
 
 @users.errorhandler(KeyError)
@@ -258,3 +258,7 @@ def unauthorized_error(e):
 @users.errorhandler(NotFound)
 def not_found_error(e):
     return jsonify({'error': e.description}), 404
+
+@users.errorhandler(MethodNotAllowed)
+def method_not_allowed_error(e):
+    return jsonify({'error': e.description}), 405

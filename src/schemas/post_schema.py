@@ -7,8 +7,9 @@ class PostSchema(ma.Schema):
 
     class Meta:
         ordered = True
-        fields = ("id", "text", "created_time", "user", "comments")
+        fields = ("id", "text", "created_time", "user", "comments", "group")
     user = fields.Nested("UserSchema", only=("id", "username"))
+    group = fields.Nested("GroupSchema", only=("name",))
     comments = fields.List(fields.Nested("CommentSchema"))
 
 post_schema = PostSchema()

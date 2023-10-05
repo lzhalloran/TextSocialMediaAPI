@@ -5,6 +5,7 @@ from models.users import User
 from models.posts import Post
 from models.comments import Comment
 from models.connections import Connection
+from models.groups import Group
 
 db_commands = Blueprint("db", __name__)
 
@@ -39,6 +40,22 @@ def seed_db():
 
     db.session.commit()
 
+    
+
+    # Seed some Groups in the database
+    group1 = Group(
+        name = "Group 1",
+        bio = "This is the page for Group 1!"
+    )
+    db.session.add(group1)
+
+    group2 = Group(
+        name = "Group 2"
+    )
+    db.session.add(group2)
+
+    db.session.commit()
+
     # Seed some Posts in the database
     post1 = Post(
         text = "Hi, this is the first post!",
@@ -51,6 +68,20 @@ def seed_db():
         user = user2
     )
     db.session.add(post2)
+
+    post3 = Post(
+        text = "The first post in Group 1!",
+        user = user1,
+        group = group1
+    )
+    db.session.add(post3)
+
+    post4 = Post(
+        text = "Group 2's first post!",
+        user = user2,
+        group = group2
+    )
+    db.session.add(post4)
 
     db.session.commit()
 
@@ -68,6 +99,20 @@ def seed_db():
         post = post2
     )
     db.session.add(comment2)
+
+    comment3 = Comment(
+        text = "Commenting on a post in group 1",
+        user = user1,
+        post = post3
+    )
+    db.session.add(comment3)
+
+    comment4 = Comment(
+        text = "Nice group post comment, user 1!",
+        user = user2,
+        post = post3
+    )
+    db.session.add(comment4)
 
     db.session.commit()
 

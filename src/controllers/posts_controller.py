@@ -3,6 +3,7 @@ from main import db
 from models.posts import Post
 from models.users import User
 from models.comments import Comment
+from models.groups import Group
 from schemas.post_schema import post_schema, posts_schema
 from schemas.comment_schema import comment_schema, comments_schema
 from datetime import datetime
@@ -20,12 +21,22 @@ def create_post():
     if not user:
         return abort(401, description="Invalid user")
 
+    
+
     post_fields = post_schema.load(request.json)
 
     new_post = Post()
     new_post.text = post_fields["text"]
     new_post.created_time = datetime.now()
     new_post.user_id = user_id
+
+    group_arg = request.args.get('group')
+    if(group_arg is not None):
+        stmt = db.select(Group).filter_by(name=group_arg)
+        group = db.session.scalar(stmt)
+        if(not group):
+            return abort(404, description="Group does not exist")
+        new_post.group_id = group.id
 
     db.session.add(new_post)
     db.session.commit()
@@ -142,7 +153,7 @@ def delete_comment(post_id, comment_id):
     return jsonify(comment_schema.dump(comment))
 
 ## Exception Handling
-from werkzeug.exceptions import BadRequest, Unauthorized
+from werkzeug.exceptions import BadRequest, Unauthorized, NotFound, MethodNotAllowed
 from marshmallow.exceptions import ValidationError
 
 @posts.errorhandler(KeyError)
@@ -160,3 +171,11 @@ def validation_error(e):
 @posts.errorhandler(Unauthorized)
 def unauthorized_error(e):
     return jsonify({'error': e.description}), 401
+
+@posts.errorhandler(NotFound)
+def not_found_error(e):
+    return jsonify({'error': e.description}), 404
+
+@posts.errorhandler(MethodNotAllowed)
+def method_not_allowed_error(e):
+    return jsonify({'error': e.description}), 405

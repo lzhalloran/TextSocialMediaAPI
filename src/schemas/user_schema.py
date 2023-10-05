@@ -7,7 +7,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     username = fields.String(required=True, validate=Length(min=1, max=20))
     email = fields.String(required=True, validate=Length(min=3, max=254))
     password = fields.String(required=True, validate=Length(min=1))
-    bio = fields.String(required=True)
+    bio = fields.String(required=False)
 
     class Meta:
         model = User
