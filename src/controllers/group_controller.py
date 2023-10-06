@@ -67,11 +67,11 @@ def group_page(name):
         return abort(404, description="Group with that name does not exist")
     
     stmt = db.select(Membership).filter(
-            (Membership.group_id == group.id) &
-            (Membership.user_id == int(user_id))
+        (Membership.group_id == group.id) &
+        (Membership.user_id == int(user_id))
     )
     membership = db.session.scalar(stmt)
-    if not membership:
+    if not membership or (membership.accepted_date is None):
         return abort(401, description="Current user is not member of this group")
     
     result = group_schema.dump(group)
@@ -93,8 +93,8 @@ def update_group(name):
         return abort(404, description="Group with that name does not exist")
     
     stmt = db.select(Membership).filter(
-            (Membership.group_id == group.id) &
-            (Membership.user_id == int(user_id))
+        (Membership.group_id == group.id) &
+        (Membership.user_id == int(user_id))
     )
     admin_membership = db.session.scalar(stmt)
     if not admin_membership.admin:
@@ -126,8 +126,8 @@ def delete_group(name):
         return abort(404, description="Group with that name does not exist")
     
     stmt = db.select(Membership).filter(
-            (Membership.group_id == group.id) &
-            (Membership.user_id == int(user_id))
+        (Membership.group_id == group.id) &
+        (Membership.user_id == int(user_id))
     )
     admin_membership = db.session.scalar(stmt)
     if not admin_membership.admin:
@@ -189,8 +189,8 @@ def get_membership(group_name):
         return abort(404, description="Group does not exist")
 
     stmt = db.select(Membership).filter(
-            (Membership.group_id == group.id) &
-            (Membership.user_id == int(user_id))
+        (Membership.group_id == group.id) &
+        (Membership.user_id == int(user_id))
     )
     admin_membership = db.session.scalar(stmt)
     if not admin_membership.admin:
@@ -232,8 +232,8 @@ def accept_membership(group_name, user_name):
         return abort(404, description="Group does not exist")
 
     stmt = db.select(Membership).filter(
-            (Membership.group_id == group.id) &
-            (Membership.user_id == int(user_id))
+        (Membership.group_id == group.id) &
+        (Membership.user_id == int(user_id))
     )
     admin_membership = db.session.scalar(stmt)
     if not admin_membership.admin:
@@ -273,8 +273,8 @@ def reject_membership(group_name, user_name):
         return abort(404, description="Group does not exist")
 
     stmt = db.select(Membership).filter(
-            (Membership.group_id == group.id) &
-            (Membership.user_id == int(user_id))
+        (Membership.group_id == group.id) &
+        (Membership.user_id == int(user_id))
     )
     admin_membership = db.session.scalar(stmt)
     if not admin_membership.admin:
