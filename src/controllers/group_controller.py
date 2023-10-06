@@ -4,6 +4,7 @@ from models.groups import Group
 from schemas.group_schema import group_schema, groups_schema
 from models.memberships import Membership
 from schemas.membership_schema import membership_schema, memberships_schema
+from models.users import User
 from datetime import date
 from flask_jwt_extended import jwt_required, get_jwt_identity
 

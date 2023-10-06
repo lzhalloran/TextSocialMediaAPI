@@ -50,9 +50,9 @@ def user_login():
     return jsonify({"user":user.username, "token": access_token })
 
 # GET route endpoint - Get user info and posts
-@users.route("<string:user_name>", methods=["GET"])
-@jwt.required()
-def user_page():
+@users.route("/<string:user_name>", methods=["GET"])
+@jwt_required()
+def user_page(user_name):
     user_id = get_jwt_identity()
     stmt = db.select(User).filter_by(id=user_id)
     current_user = db.session.scalar(stmt)
@@ -66,15 +66,15 @@ def user_page():
             return abort(404, description="Username does not exist")
         
         stmt = db.select(Connection).filter(
-            ((Connection.requestor_id == int(user_id)) & (Connection.acceptor_id == acceptor_id)) | 
-            ((Connection.requestor_id == acceptor_id) & (Connection.acceptor_id == int(user_id)))
+            ((Connection.requestor_id == int(user_id)) & (Connection.acceptor_id == other_user.id)) | 
+            ((Connection.requestor_id == other_user.id) & (Connection.acceptor_id == int(user_id)))
         )
         connection = db.session.scalar(stmt)
         if not connection or (connection.accepted_date is None):
             return abort(401, description="Current user is not connected with this user")
     
 
-    result = user_schema.dump(user)
+    result = user_schema.dump(current_user)
     return jsonify(result)
 
 # PUT route endpoint - Update user

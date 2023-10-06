@@ -4,6 +4,7 @@ from models.posts import Post
 from models.users import User
 from models.comments import Comment
 from models.groups import Group
+from models.memberships import Membership
 from schemas.post_schema import post_schema, posts_schema
 from schemas.comment_schema import comment_schema, comments_schema
 from datetime import datetime
