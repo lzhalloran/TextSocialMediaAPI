@@ -59,18 +59,20 @@ def user_page():
     if not current_user:
         return abort(401, description="Invalid user")
 
-    stmt = db.select(User).filter_by(username=user_name)
-    other_user = db.session.scalar(stmt)
-    if not other_user:
-        return abort(404, description="Username does not exist")
+    if current_user.username != user_name:
+        stmt = db.select(User).filter_by(username=user_name)
+        other_user = db.session.scalar(stmt)
+        if not other_user:
+            return abort(404, description="Username does not exist")
+        
+        stmt = db.select(Connection).filter(
+            ((Connection.requestor_id == int(user_id)) & (Connection.acceptor_id == acceptor_id)) | 
+            ((Connection.requestor_id == acceptor_id) & (Connection.acceptor_id == int(user_id)))
+        )
+        connection = db.session.scalar(stmt)
+        if not connection or (connection.accepted_date is None):
+            return abort(401, description="Current user is not connected with this user")
     
-    stmt = db.select(Connection).filter(
-        ((Connection.requestor_id == int(user_id)) & (Connection.acceptor_id == acceptor_id)) | 
-        ((Connection.requestor_id == acceptor_id) & (Connection.acceptor_id == int(user_id)))
-    )
-    connection = db.session.scalar(stmt)
-    if not connection or (connection.accepted_date is None):
-        return abort(401, description="Current user is not connected with this user")
 
     result = user_schema.dump(user)
     return jsonify(result)
