@@ -18,12 +18,14 @@ This API provides the following endpoints:
 
 This endpoint allows a new user to register. Provide the following details in JSON format:
 
+```js
 {
     "username": "NewUser",
     "email": "newuser@email.com",
     "password": "newuser123",
     "bio": "Hi I'm new user, this is my bio"
 }
+```
 
 The user will be registered and login, user and access token will be returned.
 
@@ -32,10 +34,12 @@ The user will be registered and login, user and access token will be returned.
 
 This endpoint allows an existing user to login. Provide the following details in JSON format:
 
+```js
 {
     "username": "NewUser",
     "password": "newuser123"
 }
+```
 
 The user will login, user and access token will be returned.
 
@@ -50,12 +54,14 @@ The user info and posts will be returned.
 
 This endpoint allows a user with valid login to update their user info. Access token must be provided. Users can only access their own user page, or user pages of connected users.Provide the following details in JSON format:
 
+```js
 {
     "username": "NewUser",
     "email": "newuser@email.com",
     "password": "newuser123",
     "bio": "Hi I'm new user, this is my bio"
 }
+```
 
 The user name and new access token will be returned.
 
@@ -100,9 +106,11 @@ Confirmation will be returned if the connection is deleted.
 This endpoint allows a logged in user to create a new post, with optional 'group' URL argument if the post is in a group.
 Provide the following details in JSON format:
 
+```js
 {
     "text": "This is the post text"
 }
+```
 
 Resulting post will be returned.
 
@@ -117,9 +125,11 @@ This endpoint returns a list of posts in JSON format.
 This endpoint allows a logged in user to update their own post, determined by id provided in URL.
 Provide the following details in JSON format:
 
+```js
 {
     "text": "This is the post text"
 }
+```
 
 Resulting post will be returned.
 
@@ -138,9 +148,11 @@ This endpoint allows a logged in user to comment on a post, where the post is de
 
 Provide the following details in JSON format:
 
+```js
 {
     "text": "This is the post text"
 }
+```
 
 Resulting comment will be returned.
 
@@ -157,10 +169,12 @@ Deleted comment will be returned.
 
 This endpoint allows a logged in user to create a new group. The user will also become a member of the group with admin priviliges automatically. Provide the following details in JSON format:
 
+```js
 {
     "name": "NewGroup",
     "bio": "This is the group bio"
 }
+```
 
 Resulting group will be returned.
 
@@ -174,10 +188,12 @@ This endpoint allows an accepted member of the group to get the group info and p
 
 This endpoint allows an admin member of the group to update the group info, where group is determine from 'name' in URL. Provide the following details in JSON format:
 
+```js
 {
     "name": "UpdatedGroup",
     "bio": "This is the updated group bio"
 }
+```
 
 Updated group will be returned.
 
